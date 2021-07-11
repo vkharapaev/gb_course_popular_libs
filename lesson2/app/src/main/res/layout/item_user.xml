@@ -5,6 +5,7 @@
     android:layout_height="50dp"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="horizontal"
+    android:id="@+id/item"
     android:foreground="?attr/selectableItemBackground"
     android:gravity="center_vertical">
 

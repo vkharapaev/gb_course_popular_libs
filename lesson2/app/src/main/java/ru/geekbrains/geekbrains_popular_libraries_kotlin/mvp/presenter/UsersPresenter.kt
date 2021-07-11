@@ -4,20 +4,26 @@ import com.github.terrakok.cicerone.Router
 import moxy.MvpPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.entity.GithubUser
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.repo.GithubUsersRepo
+import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.navigation.IScreens
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.presenter.list.IUserListPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.UsersView
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.list.UserItemView
 
-class UsersPresenter(val usersRepo: GithubUsersRepo, val router: Router) :
+class UsersPresenter(private val usersRepo: GithubUsersRepo, private val router: Router, private val screens: IScreens) :
     MvpPresenter<UsersView>() {
 
-    class UsersListPresenter : IUserListPresenter {
+    inner class UsersListPresenter : IUserListPresenter {
+
         val users = mutableListOf<GithubUser>()
-        override var itemClickListener: ((UserItemView) -> Unit)? = null
+
+        override var itemClickListener: ((UserItemView) -> Unit)? = {
+            router.navigateTo(screens.user(users[it.getPos()]))
+        }
 
         override fun bindView(view: UserItemView) {
-            val user = users[view.pos]
+            val user = users[view.getPos()]
             view.setLogin(user.login)
+            view.setClickListener(itemClickListener)
         }
 
         override fun getCount() = users.size
