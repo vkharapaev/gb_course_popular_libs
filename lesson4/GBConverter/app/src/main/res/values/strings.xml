@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">GBConverter</string>
+    <string name="convert">Convert</string>
+    <string name="hint">Path</string>
+    <string name="picture_name">picture</string>
+    <string name="cancel">Cancel</string>
+</resources>
