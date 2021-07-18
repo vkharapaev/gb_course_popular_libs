@@ -4,29 +4,54 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.view.MainActivity">
 
     <ImageView
-        android:id="@+id/image"
+        android:id="@+id/ivOriginalImage"
         android:layout_width="@dimen/image_size"
         android:layout_height="@dimen/image_size"
         android:layout_margin="@dimen/margin"
         android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/btnChooseImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_chainStyle="packed"
-        app:layout_constraintBottom_toTopOf="@id/btnConvert"
         app:srcCompat="@drawable/ic_placeholder" />
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnConvert"
-        android:layout_width="wrap_content"
+        android:id="@+id/btnChooseImage"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Choose Image"
+        app:layout_constraintBottom_toTopOf="@id/ivConvertedImage"
+        app:layout_constraintEnd_toEndOf="@+id/ivOriginalImage"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="@+id/ivOriginalImage"
+        app:layout_constraintTop_toBottomOf="@id/ivOriginalImage" />
+
+    <ImageView
+        android:id="@+id/ivConvertedImage"
+        android:layout_width="@dimen/image_size"
+        android:layout_height="@dimen/image_size"
+        android:layout_marginTop="@dimen/large_margin"
+        android:layout_marginBottom="@dimen/margin"
+        android:background="@color/purple_200"
+        android:scaleType="centerCrop"
+        app:layout_constraintBottom_toTopOf="@id/btnConvertOrCancel"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnChooseImage"
+        app:srcCompat="@drawable/ic_placeholder" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnConvertOrCancel"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/convert"
-        app:layout_constraintTop_toBottomOf="@id/image"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintEnd_toEndOf="@+id/ivConvertedImage"
+        app:layout_constraintStart_toStartOf="@+id/ivConvertedImage"
+        app:layout_constraintTop_toBottomOf="@id/ivConvertedImage" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
