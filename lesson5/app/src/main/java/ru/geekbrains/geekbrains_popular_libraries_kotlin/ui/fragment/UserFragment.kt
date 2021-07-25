@@ -3,14 +3,18 @@ package ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.fragment
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.databinding.FragmentUserBinding
+import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.api.ApiHolder
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.entity.GithubUser
+import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.repo.GithubUsersRepo
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.presenter.UserPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.UserView
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.App
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.BackButtonListener
+import ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.adapter.UserRepoRVAdapter
 
 class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
@@ -26,7 +30,7 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
 
     val presenter: UserPresenter by moxyPresenter {
         val user = arguments?.getParcelable<GithubUser>(USER_ARG) as GithubUser //При отсутствии аргумента приложение упадет. Так задумано.
-        UserPresenter(App.instance.router, user)
+        UserPresenter(App.instance.router, user, GithubUsersRepo(ApiHolder.api), AndroidSchedulers.mainThread())
     }
 
     private var vb: FragmentUserBinding? = null
@@ -36,13 +40,17 @@ class UserFragment : MvpAppCompatFragment(), UserView, BackButtonListener {
             vb = it
         }.root
 
+    override fun init() {
+        vb?.rvRepos?.adapter = UserRepoRVAdapter(presenter.repoListPresenter)
+    }
+
+    override fun updateList() {
+        vb?.rvRepos?.adapter?.notifyDataSetChanged()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         vb = null
-    }
-
-    override fun setLogin(text: String) {
-        vb?.tvLogin?.text = text
     }
 
     override fun backPressed() = presenter.backPressed()
