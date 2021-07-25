@@ -19,7 +19,7 @@ class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo
         override fun getCount() = users.size
 
         override fun bindView(view: UserItemView) {
-            val user = users[view.pos]
+            val user = users[view.getPos()]
             user.login?.let { view.setLogin(it) }
             user.avatarUrl?.let { view.loadAvatar(it) }
         }
@@ -33,7 +33,7 @@ class UsersPresenter(val uiScheduler: Scheduler, val usersRepo: IGithubUsersRepo
         loadData()
 
         usersListPresenter.itemClickListener = { itemView ->
-            val user = usersListPresenter.users[itemView.pos]
+            val user = usersListPresenter.users[itemView.getPos()]
             router.navigateTo(screens.user(user))
         }
     }

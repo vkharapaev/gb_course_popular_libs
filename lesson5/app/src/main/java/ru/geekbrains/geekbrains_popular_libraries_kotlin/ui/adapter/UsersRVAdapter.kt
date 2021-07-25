@@ -27,11 +27,10 @@ class UsersRVAdapter(val presenter: IUserListPresenter, val imageLoader: IImageL
     override fun getItemCount() = presenter.getCount()
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
-        presenter.bindView(holder.apply { pos = position })
+        presenter.bindView(holder)
 
     inner class ViewHolder(val vb: ItemUserBinding) : RecyclerView.ViewHolder(vb.root),
         UserItemView {
-        override var pos = -1
 
         override fun setLogin(text: String) = with(vb) {
             tvLogin.text = text
@@ -41,6 +40,7 @@ class UsersRVAdapter(val presenter: IUserListPresenter, val imageLoader: IImageL
             imageLoader.loadInto(url, ivImage)
         }
 
+        override fun getPos() = adapterPosition
 
     }
 }
