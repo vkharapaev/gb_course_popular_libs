@@ -11,8 +11,9 @@ import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.UsersView
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.list.UserItemView
 import javax.inject.Inject
 
-class UsersPresenter(val uiScheduler: Scheduler) : MvpPresenter<UsersView>() {
+class UsersPresenter : MvpPresenter<UsersView>() {
 
+    @Inject lateinit var uiScheduler: Scheduler
     @Inject lateinit var router: Router
     @Inject lateinit var screens: IScreens
     @Inject lateinit var usersRepo: IGithubUsersRepo
