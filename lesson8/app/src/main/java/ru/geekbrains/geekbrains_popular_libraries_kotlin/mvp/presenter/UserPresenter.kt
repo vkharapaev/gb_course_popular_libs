@@ -10,8 +10,14 @@ import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.repo.IGithubR
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.presenter.list.IRepositoryListPresenter
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.UserView
 import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.view.list.RepositoryItemView
+import javax.inject.Inject
 
-class UserPresenter(val uiScheduler: Scheduler, val repositoriesRepo: IGithubRepositoriesRepo, val router: Router, val user: GithubUser, val screens: IScreens) : MvpPresenter<UserView>() {
+class UserPresenter(val user: GithubUser) : MvpPresenter<UserView>() {
+
+    @Inject lateinit var uiScheduler: Scheduler
+    @Inject lateinit var repositoriesRepo: IGithubRepositoriesRepo
+    @Inject lateinit var router: Router
+    @Inject lateinit var screens: IScreens
 
     class RepositoriesListPresenter : IRepositoryListPresenter {
         val repositories = mutableListOf<GithubRepository>()
