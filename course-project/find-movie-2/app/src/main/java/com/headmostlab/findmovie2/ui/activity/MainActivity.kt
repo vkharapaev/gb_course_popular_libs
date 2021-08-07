@@ -1,7 +1,8 @@
-package com.headmostlab.findmovie2
+package com.headmostlab.findmovie2.ui.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.headmostlab.findmovie2.R
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
