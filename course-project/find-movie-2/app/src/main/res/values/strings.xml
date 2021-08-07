@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Find Movie 2</string>
+
+    <string name="movie_collection_now_playing">Now Playing</string>
+    <string name="movie_collection_popular">Popular</string>
+    <string name="movie_collection_upcoming">Upcoming</string>
+    <string name="movie_collection_top_rated">Top Rated</string>
 </resources>
