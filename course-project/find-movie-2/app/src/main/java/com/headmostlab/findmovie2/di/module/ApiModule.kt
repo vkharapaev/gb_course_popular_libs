@@ -1,8 +1,8 @@
 package com.headmostlab.findmovie2.di.module
 
 import com.headmostlab.findmovie2.BuildConfig
-import com.headmostlab.findmovie2.mvp.model.api.tmdb.TMDbApi
-import com.headmostlab.findmovie2.mvp.model.api.tmdb.TMDbApiService
+import com.headmostlab.findmovie2.mvp.model.datasource.remote.tmdb.TMDbApi
+import com.headmostlab.findmovie2.mvp.model.datasource.remote.tmdb.TMDbApiService
 import dagger.Module
 import dagger.Provides
 import javax.inject.Named
