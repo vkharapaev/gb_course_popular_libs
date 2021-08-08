@@ -37,4 +37,12 @@ object DataConverter {
             ECollection.valueOf(collection.collectionRid),
             collection.request
         )
+
+    fun map(id: Int, collection: com.headmostlab.findmovie2.mvp.model.entity.Collection) =
+        Collection(
+            id,
+            collection.eCollection.name,
+            collection.eCollection.request
+        )
+
 }

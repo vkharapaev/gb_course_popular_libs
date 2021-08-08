@@ -2,6 +2,7 @@ package com.headmostlab.findmovie2.mvp.model.datasource.local.database.dao
 
 import androidx.room.*
 import com.headmostlab.findmovie2.mvp.model.datasource.local.database.entities.Collection
+import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 @Dao
@@ -16,7 +17,7 @@ interface CollectionDao {
     fun get(id: Int): Single<Collection>
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertAll(collections: List<Collection>)
+    fun insertAll(collections: List<Collection>): Completable
 
     @Delete
     fun delete(collection: Collection)

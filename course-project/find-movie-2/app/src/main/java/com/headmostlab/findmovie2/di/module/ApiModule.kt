@@ -1,25 +1,27 @@
 package com.headmostlab.findmovie2.di.module
 
 import com.headmostlab.findmovie2.BuildConfig
+import com.headmostlab.findmovie2.di.qualifier.QualApiKey
+import com.headmostlab.findmovie2.di.qualifier.QualBaseUrl
 import com.headmostlab.findmovie2.mvp.model.datasource.remote.tmdb.TMDbApi
 import com.headmostlab.findmovie2.mvp.model.datasource.remote.tmdb.TMDbApiService
 import dagger.Module
 import dagger.Provides
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
 class ApiModule {
 
-    @Named("baseUrl")
+    @QualBaseUrl
     @Provides
     fun baseUrl(): String = "https://api.tmdb.org/"
 
-    @Named("apiKey")
+    @QualApiKey
+    @Provides
     fun apiKey(): String = BuildConfig.TMDB_API_KEY
 
     @Singleton
     @Provides
-    fun provideApi(@Named("baseUrl") baseUrl: String): TMDbApiService =
+    fun provideApi(@QualBaseUrl baseUrl: String): TMDbApiService =
         TMDbApi(baseUrl).getService()
 }
