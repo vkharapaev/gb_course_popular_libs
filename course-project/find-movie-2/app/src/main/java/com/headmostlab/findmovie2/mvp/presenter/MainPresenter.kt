@@ -8,7 +8,10 @@ import com.headmostlab.findmovie2.mvp.model.repository.Repository
 import com.headmostlab.findmovie2.mvp.model.repository.SharedPreferencesRepository
 import com.headmostlab.findmovie2.mvp.view.MainView
 import io.reactivex.rxjava3.core.Completable
+import io.reactivex.rxjava3.core.CompletableObserver
 import io.reactivex.rxjava3.core.Scheduler
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import io.reactivex.rxjava3.disposables.Disposable
 import moxy.MvpPresenter
 import javax.inject.Inject
 
@@ -33,19 +36,39 @@ class MainPresenter : MvpPresenter<MainView>() {
         ECollection.values().map { Collection(it.ordinal + 1, it, it.request) }
     }
 
+    private val compositeDisposable = CompositeDisposable()
+
+    private val observer = object : CompletableObserver {
+        override fun onComplete() {
+            sharedPrefRepo.recordAppFirstStart()
+            router.replaceScreen(screens.main())
+        }
+
+        override fun onError(e: Throwable) {
+            e.printStackTrace()
+        }
+
+        override fun onSubscribe(d: Disposable) {
+            compositeDisposable.add(d)
+        }
+    }
+
     override fun onFirstViewAttach() {
         super.onFirstViewAttach()
 
-        val completable = if (sharedPrefRepo.isAppFirstStart()) {
+        isAppFirstStart().observeOn(uiScheduler).subscribe(observer)
+    }
+
+    private fun isAppFirstStart() =
+        if (sharedPrefRepo.isAppFirstStart()) {
             repository.storeCollections(collections)
         } else {
             Completable.complete()
         }
 
-        completable.observeOn(uiScheduler).subscribe({
-            sharedPrefRepo.recordAppFirstStart()
-            router.replaceScreen(screens.main())
-        }, { it.printStackTrace() })
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
     }
 
     fun onBackPressed() {
