@@ -4,4 +4,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention
-annotation class QualBaseUrl()
+annotation class QualBaseUrl

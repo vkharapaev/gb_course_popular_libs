@@ -4,4 +4,4 @@ import javax.inject.Qualifier
 
 @Qualifier
 @Retention
-annotation class QualApiKey()
+annotation class QualApiKey
