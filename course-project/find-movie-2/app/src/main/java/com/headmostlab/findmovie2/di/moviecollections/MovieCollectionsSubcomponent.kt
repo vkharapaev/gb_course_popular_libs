@@ -1,7 +1,7 @@
 package com.headmostlab.findmovie2.di.moviecollections
 
 import com.headmostlab.findmovie2.di.moviecollections.module.MovieCollectionsModule
-import com.headmostlab.findmovie2.mvp.presenter.MovieCollectionsPresenter
+import com.headmostlab.findmovie2.mvp.presenter.CollectionsPresenter
 import dagger.Subcomponent
 
 @MovieCollectionsScope
@@ -11,5 +11,5 @@ import dagger.Subcomponent
     ]
 )
 interface MovieCollectionsSubcomponent {
-    fun inject(movieCollectionsPresenter: MovieCollectionsPresenter)
+    fun inject(collectionsPresenter: CollectionsPresenter)
 }

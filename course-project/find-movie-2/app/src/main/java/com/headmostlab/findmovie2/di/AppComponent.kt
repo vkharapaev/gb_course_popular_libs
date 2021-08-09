@@ -4,7 +4,6 @@ import android.content.Context
 import com.headmostlab.findmovie2.di.module.*
 import com.headmostlab.findmovie2.di.moviecollections.MovieCollectionsSubcomponent
 import com.headmostlab.findmovie2.mvp.presenter.MainPresenter
-import com.headmostlab.findmovie2.mvp.presenter.MovieCollectionsPresenter
 import com.headmostlab.findmovie2.ui.activity.MainActivity
 import dagger.BindsInstance
 import dagger.Component

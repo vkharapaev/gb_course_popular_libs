@@ -14,6 +14,9 @@ class RepositoryImpl constructor(
     private val apiDataSource: TMDbDataSource,
     private val dbDataSource: DbDataSource
 ) : Repository {
+    override fun getMovies(request: String, page: Int?): Single<List<ShortMovie>> =
+        apiDataSource.getMovies(request, page)
+
     override fun getNowPlayingMovies(): Single<List<ShortMovie>> =
         apiDataSource.getNowPlayingMovies()
 

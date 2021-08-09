@@ -8,6 +8,7 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 interface Repository {
+    fun getMovies(request: String, page: Int? = null): Single<List<ShortMovie>>
     fun getNowPlayingMovies(): Single<List<ShortMovie>>
     fun getUpcomingMovies(): Single<List<ShortMovie>>
     fun getPopularMovies(): Single<List<ShortMovie>>
