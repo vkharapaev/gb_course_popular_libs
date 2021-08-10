@@ -8,4 +8,5 @@ import moxy.viewstate.strategy.StateStrategyType
 interface CollectionsView : MvpView {
     fun init()
     fun updateList()
+    fun showMessage(message: String)
 }

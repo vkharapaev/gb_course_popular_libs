@@ -1,36 +1,51 @@
 package com.headmostlab.findmovie2.ui.fragment
 
+import android.widget.Toast
 import com.headmostlab.findmovie2.R
 import com.headmostlab.findmovie2.databinding.FragmentCollectionsBinding
-import com.headmostlab.findmovie2.di.moviecollections.MovieCollectionsSubcomponent
+import com.headmostlab.findmovie2.di.moviecollections.CollectionsSubcomponent
 import com.headmostlab.findmovie2.mvp.presenter.CollectionsPresenter
 import com.headmostlab.findmovie2.mvp.view.CollectionsView
 import com.headmostlab.findmovie2.ui.App
+import com.headmostlab.findmovie2.ui.adapter.CollectionAdapter
 import com.headmostlab.findmovie2.ui.adapter.CollectionsAdapter
+import com.headmostlab.findmovie2.ui.decoration.ItemDecoration
 import com.headmostlab.findmovie2.ui.utils.viewBinding
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class CollectionsFragment : MvpAppCompatFragment(R.layout.fragment_collections),
-    CollectionsView {
+class CollectionsFragment : MvpAppCompatFragment(R.layout.fragment_collections), CollectionsView {
 
-    private lateinit var movieCollectionsSubcomponent: MovieCollectionsSubcomponent
+    private val collectionsSubcomponent: CollectionsSubcomponent by lazy {
+        App.instance.appComponent.movieCollectionsSubcomponent()
+    }
 
     private val presenter by moxyPresenter {
-        CollectionsPresenter().apply {
-            movieCollectionsSubcomponent = App.instance.appComponent.movieCollectionsSubcomponent()
-            movieCollectionsSubcomponent.inject(this)
-        }
+        CollectionsPresenter().apply { collectionsSubcomponent.inject(this) }
     }
 
     private val binding by viewBinding(FragmentCollectionsBinding::bind)
 
     override fun init() {
-        binding.movieCollectionsRecyclerView.adapter =
-            CollectionsAdapter(presenter.listPresenter)
+        binding.collectionsRecyclerView.adapter = CollectionsAdapter(presenter.listPresenter) {
+            CollectionAdapter(presenter.provideCollectionListPresenter()).apply {
+                collectionsSubcomponent.inject(this)
+            }
+        }
+
+        val itemDecoration = ItemDecoration.Builder()
+            .setBottom(resources.getDimensionPixelOffset(R.dimen.large_margin))
+            .setFirstLast(resources.getDimensionPixelOffset(R.dimen.the_largest_margin))
+            .build()
+
+        binding.collectionsRecyclerView.addItemDecoration(itemDecoration)
     }
 
     override fun updateList() {
-        binding.movieCollectionsRecyclerView.adapter?.notifyDataSetChanged()
+        binding.collectionsRecyclerView.adapter?.notifyDataSetChanged()
+    }
+
+    override fun showMessage(message: String) {
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 }

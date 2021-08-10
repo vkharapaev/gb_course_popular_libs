@@ -3,16 +3,21 @@ package com.headmostlab.findmovie2.ui.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.headmostlab.findmovie2.R
 import com.headmostlab.findmovie2.databinding.ItemCollectionBinding
-import com.headmostlab.findmovie2.mvp.presenter.list.ICollectionListPresenter
-import com.headmostlab.findmovie2.mvp.presenter.list.ICollectionsListPresenter
+import com.headmostlab.findmovie2.mvp.presenter.list.CollectionListPresenter
+import com.headmostlab.findmovie2.mvp.presenter.list.CollectionsListPresenter
 import com.headmostlab.findmovie2.mvp.view.list.ICollectionItemView
+import com.headmostlab.findmovie2.ui.decoration.ItemDecoration
 
-class CollectionsAdapter(private val presenter: ICollectionsListPresenter) :
+class CollectionsAdapter(
+    private val presenter: CollectionsListPresenter,
+    private val collectionAdapterFactory: (() -> CollectionAdapter)
+) :
     RecyclerView.Adapter<CollectionViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        CollectionViewHolder.newInstance(parent)
+        CollectionViewHolder.newInstance(collectionAdapterFactory.invoke(), parent)
 
     override fun onBindViewHolder(holder: CollectionViewHolder, position: Int) =
         presenter.bindView(holder)
@@ -20,31 +25,42 @@ class CollectionsAdapter(private val presenter: ICollectionsListPresenter) :
     override fun getItemCount(): Int = presenter.getCount()
 }
 
-class CollectionViewHolder(private val binding: ItemCollectionBinding) :
+class CollectionViewHolder(
+    private val adapter: CollectionAdapter,
+    private val binding: ItemCollectionBinding,
+) :
     RecyclerView.ViewHolder(binding.root), ICollectionItemView {
 
-    private val adapter = CollectionAdapter()
+    override val presenter: CollectionListPresenter = adapter.presenter
 
     init {
-        binding.moviesRecyclerView.adapter = adapter
-    }
+        binding.recyclerView.adapter = adapter
 
-    override fun setPresenter(presenter: ICollectionListPresenter) {
-        adapter.presenter = presenter
+        val decoration = ItemDecoration.Builder()
+            .setRight(binding.root.context.resources.getDimensionPixelOffset(R.dimen.large_margin))
+            .setFirstLast(binding.root.context.resources.getDimensionPixelOffset(R.dimen.large_margin))
+            .build()
+
+        binding.recyclerView.addItemDecoration(decoration)
     }
 
     override fun updateList() {
         adapter.notifyDataSetChanged()
     }
 
+    override fun setTitle(title: String) {
+        binding.title.text = title
+    }
+
     override fun position(): Int = bindingAdapterPosition
 
     companion object {
-        fun newInstance(parent: ViewGroup) =
-            CollectionViewHolder(
-                ItemCollectionBinding.inflate(
-                    LayoutInflater.from(parent.context), parent, false
-                )
-            )
+        fun newInstance(
+            adapter: CollectionAdapter,
+            parent: ViewGroup,
+        ) = CollectionViewHolder(
+            adapter,
+            ItemCollectionBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+        )
     }
 }

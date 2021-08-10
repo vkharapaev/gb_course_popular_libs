@@ -1,8 +1,9 @@
 package com.headmostlab.findmovie2.mvp.view.list
 
-import com.headmostlab.findmovie2.mvp.presenter.list.ICollectionListPresenter
+import com.headmostlab.findmovie2.mvp.presenter.list.CollectionListPresenter
 
 interface ICollectionItemView : IItemView {
-    fun setPresenter(presenter: ICollectionListPresenter)
+    val presenter: CollectionListPresenter
     fun updateList()
+    fun setTitle(title: String)
 }

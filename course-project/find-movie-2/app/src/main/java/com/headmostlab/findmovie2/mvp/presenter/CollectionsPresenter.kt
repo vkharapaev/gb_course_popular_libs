@@ -1,9 +1,12 @@
 package com.headmostlab.findmovie2.mvp.presenter
 
 import com.headmostlab.findmovie2.mvp.model.entity.ShortMovie
+import com.headmostlab.findmovie2.mvp.model.image.ImageHostProvider
 import com.headmostlab.findmovie2.mvp.model.repository.Repository
-import com.headmostlab.findmovie2.mvp.presenter.list.ICollectionListPresenter
-import com.headmostlab.findmovie2.mvp.presenter.list.ICollectionsListPresenter
+import com.headmostlab.findmovie2.mvp.model.resource.ResourceManager
+import com.headmostlab.findmovie2.mvp.presenter.entity.UiCollection
+import com.headmostlab.findmovie2.mvp.presenter.list.CollectionListPresenter
+import com.headmostlab.findmovie2.mvp.presenter.list.CollectionsListPresenter
 import com.headmostlab.findmovie2.mvp.presenter.list.IListPresenter
 import com.headmostlab.findmovie2.mvp.view.CollectionsView
 import com.headmostlab.findmovie2.mvp.view.list.ICollectionItemView
@@ -23,11 +26,17 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
     @Inject
     lateinit var uiScheduler: Scheduler
 
+    @Inject
+    lateinit var imageHostProvider: ImageHostProvider
+
+    @Inject
+    lateinit var resourceManager: ResourceManager
+
     private val compositeDisposable = CompositeDisposable()
 
-    private val _listPresenter = CollectionsListPresenter()
+    private val _listPresenter = CollectionsListPresenterImpl()
 
-    val listPresenter: ICollectionsListPresenter = _listPresenter
+    val listPresenter: CollectionsListPresenter = _listPresenter
 
     override fun onFirstViewAttach() {
         viewState.init()
@@ -40,13 +49,14 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
         compositeDisposable.add(disposable)
     }
 
-    private fun loadMovies(onSuccess: (List<List<ShortMovie>>) -> Unit): Disposable {
+    private fun loadMovies(onSuccess: (List<UiCollection>) -> Unit): Disposable {
         return repository.getCollections()
             .flatMap { collections ->
-                val movieLists = collections.map {
-                    repository.getMovies(it.request).map { it.take(10) }
+                val movieLists = collections.map { collection ->
+                    repository.getMovies(collection.request).map { it.take(10) }
+                        .map { UiCollection(collection.eCollection, it) }
                 }
-                Single.zip(movieLists) { it.toList() as List<List<ShortMovie>> }
+                Single.zip(movieLists) { it.toList() as List<UiCollection> }
             }
             .observeOn(uiScheduler)
             .subscribe({ onSuccess.invoke(it) }, { it.printStackTrace() })
@@ -56,48 +66,61 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
         super.onDestroy()
         compositeDisposable.clear()
     }
-}
 
-private class CollectionsListPresenter :
-    ICollectionsListPresenter {
+    fun provideCollectionListPresenter(): CollectionListPresenter = CollectionListPresenterImpl()
 
-    private val collectionListPresenters = mutableListOf<CollectionListPresenter>()
+    private inner class CollectionsListPresenterImpl :
+        CollectionsListPresenter {
 
-    fun setData(data: List<List<ShortMovie>>) {
-        collectionListPresenters.clear()
-        data.forEach {
-            collectionListPresenters.add(CollectionListPresenter().apply { setData(it) })
+        private val uiCollectionList = mutableListOf<UiCollection>()
+        private val collectionListPresenters = mutableListOf<CollectionListPresenterImpl>()
+
+        fun setData(data: List<UiCollection>) {
+            uiCollectionList.clear()
+            uiCollectionList.addAll(data)
+            collectionListPresenters.clear()
+            data.forEach {
+                collectionListPresenters.add(CollectionListPresenterImpl().apply { setData(it.movies) })
+            }
         }
+
+        override var itemClickListener: ((ICollectionItemView) -> Unit)? = null
+
+        override fun bindView(view: ICollectionItemView) {
+            if (view.position() == IListPresenter.NO_POSITION) return
+            val uiCollection = uiCollectionList[view.position()]
+            view.setTitle(resourceManager.getString(uiCollection.eCollection))
+            (view.presenter as? CollectionListPresenterImpl)?.setData(uiCollection.movies)
+            view.updateList()
+        }
+
+        override fun getCount(): Int = collectionListPresenters.size
     }
 
-    override var itemClickListener: ((ICollectionItemView) -> Unit)? = null
+    private inner class CollectionListPresenterImpl :
+        CollectionListPresenter {
 
-    override fun bindView(view: ICollectionItemView) {
-        if (view.position() == IListPresenter.NO_POSITION) return
-        view.setPresenter(collectionListPresenters[view.position()])
-        view.updateList()
+        private val collection = mutableListOf<ShortMovie>()
+
+        fun setData(data: List<ShortMovie>) {
+            collection.clear()
+            collection.addAll(data)
+        }
+
+        override var itemClickListener: ((IMovieItemView) -> Unit)? = { view ->
+            viewState.showMessage(collection[view.position()].title)
+        }
+
+        override fun bindView(view: IMovieItemView) {
+            if (view.position() == IListPresenter.NO_POSITION) return
+            val movie = collection[view.position()]
+            view.setTitle(movie.title)
+            itemClickListener?.let { view.setListener(it) }
+            movie.poster?.let {
+                view.loadPoster(imageHostProvider.getHostUrl() + it)
+            }
+        }
+
+        override fun getCount(): Int = collection.size
     }
-
-    override fun getCount(): Int = collectionListPresenters.size
-}
-
-private class CollectionListPresenter :
-    ICollectionListPresenter {
-
-    private val collection = mutableListOf<ShortMovie>()
-
-    fun setData(data: List<ShortMovie>) {
-        collection.clear()
-        collection.addAll(data)
-    }
-
-    override var itemClickListener: ((IMovieItemView) -> Unit)? = null
-
-    override fun bindView(view: IMovieItemView) {
-        if (view.position() == IListPresenter.NO_POSITION) return
-        val movie = collection[view.position()]
-        view.setTitle(movie.title)
-    }
-
-    override fun getCount(): Int = collection.size
 }
