@@ -11,6 +11,9 @@ interface CollectionDao {
     fun getAll(): Single<List<Collection>>
 
     @Query("SELECT * FROM Collection WHERE request = :rq")
+    fun getByRequestSingle(rq: String): Single<Collection>
+
+    @Query("SELECT * FROM Collection WHERE request = :rq")
     fun getByRequest(rq: String): Collection
 
     @Query("SELECT * FROM Collection WHERE id = :id")

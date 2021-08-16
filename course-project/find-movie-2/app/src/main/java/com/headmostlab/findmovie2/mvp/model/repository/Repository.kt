@@ -8,14 +8,12 @@ import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
 
 interface Repository {
-    fun getMovies(request: String, page: Int? = null): Single<List<ShortMovie>>
-    fun getNowPlayingMovies(): Single<List<ShortMovie>>
-    fun getUpcomingMovies(): Single<List<ShortMovie>>
-    fun getPopularMovies(): Single<List<ShortMovie>>
-    fun getMovie(movieId: Int): Single<FullMovie>
-    fun getVideos(movieId: Int): Single<List<String>>
-    fun getPeople(movieId: Int): Single<List<Person>>
     fun storeCollections(collections: List<Collection>): Completable
     fun getCollections(): Single<List<Collection>>
     fun getCollection(id: Int): Single<Collection>
+
+    fun getMovies(collection: Collection, page: Int = 1): Single<List<ShortMovie>>
+    fun getMovie(movieId: Int): Single<FullMovie>
+    fun getVideos(movieId: Int): Single<List<String>>
+    fun getPeople(movieId: Int): Single<List<Person>>
 }

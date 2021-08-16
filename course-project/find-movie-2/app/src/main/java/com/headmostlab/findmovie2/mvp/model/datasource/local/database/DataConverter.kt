@@ -20,6 +20,8 @@ object DataConverter {
 
     fun map(movies: List<ShortMovie>): List<Movie> = movies.map { map(it) }
 
+    fun toShortMovies(movies: List<Movie>): List<ShortMovie> = movies.map { map(it) }
+
     fun map(movie: Movie) =
         ShortMovie(
             movie.id,

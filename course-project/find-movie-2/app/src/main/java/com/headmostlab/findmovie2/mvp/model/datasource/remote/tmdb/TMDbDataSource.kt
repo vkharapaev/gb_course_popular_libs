@@ -13,27 +13,14 @@ class TMDbDataSource constructor(
     @Named("apiKey") private val apiKey: String
 ) {
     fun getMovies(request: String, page: Int? = null): Single<List<ShortMovie>> =
-        service.getMovies(request, apiKey, page).subscribeOn(Schedulers.io())
-            .map { DataConverter.map(it) }
-
-    fun getNowPlayingMovies(): Single<List<ShortMovie>> =
-        service.getNowPlayingMovies(apiKey).subscribeOn(Schedulers.io())
-            .map { DataConverter.map(it) }
-
-    fun getUpcomingMovies(): Single<List<ShortMovie>> =
-        service.getUpcomingMovies(apiKey).subscribeOn(Schedulers.io()).map { DataConverter.map(it) }
-
-    fun getPopularMovies(): Single<List<ShortMovie>> =
-        service.getPopularMovies(apiKey).subscribeOn(Schedulers.io()).map { DataConverter.map(it) }
+        service.getMovies(request, apiKey, page).map { DataConverter.map(it) }
 
     fun getMovie(id: Int): Single<FullMovie> =
-        service.getMovie(id, apiKey).subscribeOn(Schedulers.io()).map { DataConverter.map(it) }
+        service.getMovie(id, apiKey).map { DataConverter.map(it) }
 
     fun getVideos(movieId: Int): Single<List<String>> =
-        service.getVideos(movieId, apiKey).subscribeOn(Schedulers.io())
-            .map { DataConverter.map(it) }
+        service.getVideos(movieId, apiKey).map { DataConverter.map(it) }
 
     fun getPeople(movieId: Int): Single<List<Person>> =
-        service.getCredits(movieId, apiKey).subscribeOn(Schedulers.io())
-            .map { DataConverter.map(it) }
+        service.getCredits(movieId, apiKey).map { DataConverter.map(it) }
 }

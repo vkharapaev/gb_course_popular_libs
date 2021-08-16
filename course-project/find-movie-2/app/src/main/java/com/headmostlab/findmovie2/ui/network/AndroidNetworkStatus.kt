@@ -1,14 +1,17 @@
-package ru.geekbrains.geekbrains_popular_libraries_kotlin.ui.network
+package com.headmostlab.findmovie2.ui.network
 
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.Network
 import android.net.NetworkRequest
+import com.headmostlab.findmovie2.mvp.model.network.NetworkStatus
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.Single
 import io.reactivex.rxjava3.subjects.BehaviorSubject
-import ru.geekbrains.geekbrains_popular_libraries_kotlin.mvp.model.network.INetworkStatus
 
-class AndroidNetworkStatus(context: Context) : INetworkStatus {
-    private val statusSubject: BehaviorSubject<Boolean> = BehaviorSubject.create()
+class AndroidNetworkStatus(private val context: Context) : NetworkStatus {
+
+    private val statusSubject = BehaviorSubject.create<Boolean>()
 
     init {
         statusSubject.onNext(false)
@@ -32,6 +35,8 @@ class AndroidNetworkStatus(context: Context) : INetworkStatus {
             })
     }
 
-    override fun isOnline() = statusSubject
-    override fun isOnlineSingle() = statusSubject.first(false)
+    override fun isOnline(): Observable<Boolean> = statusSubject
+    override fun isOnlineSingle(): Single<Boolean> = statusSubject.first(false).doOnSuccess {
+        print(it)
+    }
 }

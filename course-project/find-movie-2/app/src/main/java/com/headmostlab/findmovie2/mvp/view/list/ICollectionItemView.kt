@@ -6,4 +6,5 @@ interface ICollectionItemView : IItemView {
     val presenter: CollectionListPresenter
     fun updateList()
     fun setTitle(title: String)
+    fun setListener(listener: ((ICollectionItemView) -> Unit))
 }

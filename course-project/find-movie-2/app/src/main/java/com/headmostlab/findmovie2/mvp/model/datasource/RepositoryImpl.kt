@@ -6,28 +6,51 @@ import com.headmostlab.findmovie2.mvp.model.entity.Collection
 import com.headmostlab.findmovie2.mvp.model.entity.FullMovie
 import com.headmostlab.findmovie2.mvp.model.entity.Person
 import com.headmostlab.findmovie2.mvp.model.entity.ShortMovie
+import com.headmostlab.findmovie2.mvp.model.network.NetworkStatus
 import com.headmostlab.findmovie2.mvp.model.repository.Repository
 import io.reactivex.rxjava3.core.Completable
 import io.reactivex.rxjava3.core.Single
+import io.reactivex.rxjava3.schedulers.Schedulers
 
 class RepositoryImpl constructor(
     private val apiDataSource: TMDbDataSource,
-    private val dbDataSource: DbDataSource
+    private val dbDataSource: DbDataSource,
+    private val networkStatus: NetworkStatus
 ) : Repository {
-    override fun getMovies(request: String, page: Int?): Single<List<ShortMovie>> =
-        apiDataSource.getMovies(request, page)
 
-    override fun getNowPlayingMovies(): Single<List<ShortMovie>> =
-        apiDataSource.getNowPlayingMovies()
+    override fun storeCollections(collections: List<Collection>): Completable {
+        return dbDataSource.storeCollections(collections).subscribeOn(Schedulers.io())
+    }
 
-    override fun getUpcomingMovies(): Single<List<ShortMovie>> = apiDataSource.getUpcomingMovies()
-    override fun getPopularMovies(): Single<List<ShortMovie>> = apiDataSource.getPopularMovies()
-    override fun getMovie(movieId: Int): Single<FullMovie> = apiDataSource.getMovie(movieId)
-    override fun getVideos(movieId: Int): Single<List<String>> = apiDataSource.getVideos(movieId)
-    override fun getPeople(movieId: Int): Single<List<Person>> = apiDataSource.getPeople(movieId)
-    override fun storeCollections(collections: List<Collection>): Completable =
-        dbDataSource.storeCollections(collections)
+    override fun getCollections(): Single<List<Collection>> {
+        return dbDataSource.getCollections().subscribeOn(Schedulers.io())
+    }
 
-    override fun getCollections(): Single<List<Collection>> = dbDataSource.getCollections()
-    override fun getCollection(id: Int): Single<Collection> = dbDataSource.getCollection(id)
+    override fun getCollection(id: Int): Single<Collection> {
+        return dbDataSource.getCollection(id).subscribeOn(Schedulers.io())
+    }
+
+    override fun getMovies(collection: Collection, page: Int): Single<List<ShortMovie>> {
+        return networkStatus.isOnlineSingle().flatMap { isOnline ->
+            if (isOnline) {
+                apiDataSource.getMovies(collection.request, page).flatMap { movies ->
+                    dbDataSource.storeMovies(collection.request, movies).toSingleDefault(movies)
+                }
+            } else {
+                dbDataSource.getMovies(collection)
+            }
+        }.subscribeOn(Schedulers.io())
+    }
+
+    override fun getMovie(movieId: Int): Single<FullMovie> {
+        return apiDataSource.getMovie(movieId).subscribeOn(Schedulers.io())
+    }
+
+    override fun getVideos(movieId: Int): Single<List<String>> {
+        return apiDataSource.getVideos(movieId).subscribeOn(Schedulers.io())
+    }
+
+    override fun getPeople(movieId: Int): Single<List<Person>> {
+        return apiDataSource.getPeople(movieId).subscribeOn(Schedulers.io())
+    }
 }

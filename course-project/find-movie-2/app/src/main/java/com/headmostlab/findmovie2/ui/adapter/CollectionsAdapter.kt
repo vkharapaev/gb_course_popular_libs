@@ -52,6 +52,10 @@ class CollectionViewHolder(
         binding.title.text = title
     }
 
+    override fun setListener(listener: ((ICollectionItemView) -> Unit)) {
+        binding.title.setOnClickListener { listener(this) }
+    }
+
     override fun position(): Int = bindingAdapterPosition
 
     companion object {

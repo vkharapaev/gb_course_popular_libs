@@ -12,7 +12,7 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [
-        AppModule::class,
+        CommonModule::class,
         ApiModule::class,
         CiceroneModule::class,
         DataSourceModule::class,

@@ -53,13 +53,13 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
         return repository.getCollections()
             .flatMap { collections ->
                 val movieLists = collections.map { collection ->
-                    repository.getMovies(collection.request).map { it.take(10) }
+                    repository.getMovies(collection).map { it.take(10) }
                         .map { UiCollection(collection.eCollection, it) }
                 }
                 Single.zip(movieLists) { it.toList() as List<UiCollection> }
             }
             .observeOn(uiScheduler)
-            .subscribe({ onSuccess.invoke(it) }, { it.printStackTrace() })
+            .subscribe({ onSuccess(it) }, { it.printStackTrace() })
     }
 
     override fun onDestroy() {
@@ -69,8 +69,8 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
 
     fun provideCollectionListPresenter(): CollectionListPresenter = CollectionListPresenterImpl()
 
-    private inner class CollectionsListPresenterImpl :
-        CollectionsListPresenter {
+    // ---------------------------------------------------------------------------------------------
+    private inner class CollectionsListPresenterImpl : CollectionsListPresenter {
 
         private val uiCollectionList = mutableListOf<UiCollection>()
         private val collectionListPresenters = mutableListOf<CollectionListPresenterImpl>()
@@ -84,12 +84,15 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
             }
         }
 
-        override var itemClickListener: ((ICollectionItemView) -> Unit)? = null
+        override var itemClickListener: ((ICollectionItemView) -> Unit)? = {
+            viewState.showMessage(resourceManager.getString(uiCollectionList[it.position()].eCollection))
+        }
 
         override fun bindView(view: ICollectionItemView) {
             if (view.position() == IListPresenter.NO_POSITION) return
             val uiCollection = uiCollectionList[view.position()]
             view.setTitle(resourceManager.getString(uiCollection.eCollection))
+            itemClickListener?.let { view.setListener(it) }
             (view.presenter as? CollectionListPresenterImpl)?.setData(uiCollection.movies)
             view.updateList()
         }
@@ -97,8 +100,8 @@ class CollectionsPresenter : MvpPresenter<CollectionsView>() {
         override fun getCount(): Int = collectionListPresenters.size
     }
 
-    private inner class CollectionListPresenterImpl :
-        CollectionListPresenter {
+    // ---------------------------------------------------------------------------------------------
+    private inner class CollectionListPresenterImpl : CollectionListPresenter {
 
         private val collection = mutableListOf<ShortMovie>()
 
