@@ -3,7 +3,7 @@ package com.headmostlab.findmovie2.mvp.presenter
 import com.github.terrakok.cicerone.Router
 import com.headmostlab.findmovie2.mvp.model.entity.Collection
 import com.headmostlab.findmovie2.mvp.model.entity.ECollection
-import com.headmostlab.findmovie2.mvp.model.navigator.IScreens
+import com.headmostlab.findmovie2.mvp.model.navigator.Screens
 import com.headmostlab.findmovie2.mvp.model.repository.Repository
 import com.headmostlab.findmovie2.mvp.model.repository.SharedPreferencesRepository
 import com.headmostlab.findmovie2.mvp.view.MainView
@@ -21,7 +21,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     lateinit var router: Router
 
     @Inject
-    lateinit var screens: IScreens
+    lateinit var screens: Screens
 
     @Inject
     lateinit var sharedPrefRepo: SharedPreferencesRepository
@@ -41,7 +41,7 @@ class MainPresenter : MvpPresenter<MainView>() {
     private val observer = object : CompletableObserver {
         override fun onComplete() {
             sharedPrefRepo.recordAppFirstStart()
-            router.replaceScreen(screens.main())
+            router.replaceScreen(screens.collections())
         }
 
         override fun onError(e: Throwable) {

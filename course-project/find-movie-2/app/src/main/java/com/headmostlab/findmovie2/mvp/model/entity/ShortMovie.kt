@@ -1,5 +1,9 @@
 package com.headmostlab.findmovie2.mvp.model.entity
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class ShortMovie(
     val id: Int,
     val title: String,
@@ -8,4 +12,4 @@ data class ShortMovie(
     val popularity: Double,
     val poster: String?,
     val backdrop: String?
-)
+) : Parcelable

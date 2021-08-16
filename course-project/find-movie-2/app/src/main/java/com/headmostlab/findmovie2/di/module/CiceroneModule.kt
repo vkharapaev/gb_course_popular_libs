@@ -3,7 +3,7 @@ package com.headmostlab.findmovie2.di.module
 import com.github.terrakok.cicerone.Cicerone
 import com.github.terrakok.cicerone.NavigatorHolder
 import com.github.terrakok.cicerone.Router
-import com.headmostlab.findmovie2.mvp.model.navigator.IScreens
+import com.headmostlab.findmovie2.mvp.model.navigator.Screens
 import com.headmostlab.findmovie2.ui.navigation.AndroidScreens
 import dagger.Module
 import dagger.Provides
@@ -25,6 +25,6 @@ class CiceroneModule {
 
     @Singleton
     @Provides
-    fun provideScreens(): IScreens = AndroidScreens()
+    fun provideScreens(): Screens = AndroidScreens()
 
 }

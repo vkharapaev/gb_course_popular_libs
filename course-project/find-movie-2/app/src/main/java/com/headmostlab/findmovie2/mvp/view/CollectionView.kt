@@ -4,7 +4,6 @@ import moxy.viewstate.strategy.AddToEndSingleStrategy
 import moxy.viewstate.strategy.StateStrategyType
 
 @StateStrategyType(AddToEndSingleStrategy::class)
-interface CollectionsView : BaseView {
+interface CollectionView : BaseView {
     fun updateList()
-    fun showMessage(message: String)
 }
