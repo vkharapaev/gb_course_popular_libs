@@ -50,7 +50,7 @@ class CollectionPresenter(collectionArg: Collection?) : MvpPresenter<CollectionV
         })
     }
 
-    fun goToMovieScreen(movie: ShortMovie) = router.navigateTo(screens.movie(movie))
+    private fun goToMovieScreen(movie: ShortMovie) = router.navigateTo(screens.movie(movie))
 
     fun backPressed() = router.exit()
 

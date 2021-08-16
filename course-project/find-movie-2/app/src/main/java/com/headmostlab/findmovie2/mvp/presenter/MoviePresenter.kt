@@ -1,8 +1,10 @@
 package com.headmostlab.findmovie2.mvp.presenter
 
+import com.github.terrakok.cicerone.Router
 import com.headmostlab.findmovie2.mvp.model.entity.ShortMovie
 import com.headmostlab.findmovie2.mvp.model.repository.Repository
 import com.headmostlab.findmovie2.mvp.view.MovieView
+import com.headmostlab.findmovie2.ui.BackButtonListener
 import io.reactivex.rxjava3.core.Scheduler
 import moxy.MvpPresenter
 import java.lang.IllegalArgumentException
@@ -18,6 +20,9 @@ class MoviePresenter(argMovie: ShortMovie?) : MvpPresenter<MovieView>() {
     @Inject
     lateinit var uiScheduler: Scheduler
 
+    @Inject
+    lateinit var router: Router
+
     override fun onFirstViewAttach() {
         viewState.init()
 
@@ -26,6 +31,10 @@ class MoviePresenter(argMovie: ShortMovie?) : MvpPresenter<MovieView>() {
         }, {
             it.printStackTrace()
         })
+    }
+
+    fun onBackPressed() {
+        router.exit()
     }
 
 }
