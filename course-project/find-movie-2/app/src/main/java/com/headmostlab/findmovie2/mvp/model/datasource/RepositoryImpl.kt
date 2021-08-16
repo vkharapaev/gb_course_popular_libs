@@ -43,7 +43,15 @@ class RepositoryImpl constructor(
     }
 
     override fun getMovie(movieId: Int): Single<FullMovie> {
-        return apiDataSource.getMovie(movieId).subscribeOn(Schedulers.io())
+        return networkStatus.isOnlineSingle().flatMap { isOnline ->
+            if (isOnline) {
+                apiDataSource.getMovie(movieId).flatMap { movie ->
+                    dbDataSource.storeFullMovie(movie).toSingleDefault(movie)
+                }
+            } else {
+                dbDataSource.getFullMovie(movieId)
+            }
+        }.subscribeOn(Schedulers.io())
     }
 
     override fun getVideos(movieId: Int): Single<List<String>> {

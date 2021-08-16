@@ -5,4 +5,7 @@
     <string name="movie_collection_popular">Popular</string>
     <string name="movie_collection_upcoming">Upcoming</string>
     <string name="movie_collection_top_rated">Top Rated</string>
+    <string name="detail_duration">%s min</string>
+    <string name="detail_rating">"Rating: %s"</string>
+
 </resources>

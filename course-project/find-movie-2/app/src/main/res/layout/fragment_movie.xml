@@ -1,13 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nestedScrollView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="wrap_content"
+    android:overScrollMode="never"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/bottomContent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:text="Movie Screen"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4" />
+        android:paddingVertical="@dimen/bottom_padding">
 
-</FrameLayout>
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/startMargin"
+            android:layout_width="@dimen/largest_margin"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/largest_margin" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/endMargin"
+            android:layout_width="@dimen/largest_margin"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/largest_margin" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:paddingBottom="@dimen/large_margin"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+            app:layout_constraintEnd_toEndOf="@id/endMargin"
+            app:layout_constraintStart_toStartOf="@id/startMargin"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Test Header" />
+
+        <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toEndOf="@id/startMargin"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="2020" />
+
+        <TextView
+            android:id="@+id/genres"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_margin"
+            android:ellipsize="end"
+            android:gravity="end"
+            android:lines="1"
+            android:textSize="@dimen/text_size"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="@id/endMargin"
+            app:layout_constraintStart_toEndOf="@id/date"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:text="Action, Adventure, Science Fiction, Action, Adventure" />
+
+        <TextView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintStart_toStartOf="@id/startMargin"
+            app:layout_constraintTop_toBottomOf="@id/date"
+            tools:text="120 min" />
+
+        <TextView
+            android:id="@+id/rating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/large_margin"
+            android:textSize="@dimen/text_size"
+            android:textStyle="italic"
+            app:layout_constraintEnd_toEndOf="@id/endMargin"
+            app:layout_constraintTop_toBottomOf="@id/genres"
+            tools:text="Rating: 8.8" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:textSize="@dimen/text_size"
+            app:layout_constraintEnd_toEndOf="@id/endMargin"
+            app:layout_constraintStart_toStartOf="@id/startMargin"
+            app:layout_constraintTop_toBottomOf="@id/rating"
+            tools:text="An apocalyptic story set in the furthest reaches of our planet, in a stark desert landscape where humanity is broken, and most everyone is crazed fighting for the necessities of life. Within this world exist two rebels on the run who just might be able to restore order." />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/actorsRecyclerView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/largest_margin"
+            android:clipToPadding="false"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/large_margin"
+            android:paddingEnd="@dimen/large_margin"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/description"
+            tools:listitem="@layout/item_actor" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>

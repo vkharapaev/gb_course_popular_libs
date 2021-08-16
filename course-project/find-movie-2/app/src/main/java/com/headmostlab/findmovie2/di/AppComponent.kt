@@ -5,6 +5,7 @@ import com.headmostlab.findmovie2.di.module.*
 import com.headmostlab.findmovie2.mvp.presenter.CollectionPresenter
 import com.headmostlab.findmovie2.mvp.presenter.CollectionsPresenter
 import com.headmostlab.findmovie2.mvp.presenter.MainPresenter
+import com.headmostlab.findmovie2.mvp.presenter.MoviePresenter
 import com.headmostlab.findmovie2.ui.activity.MainActivity
 import com.headmostlab.findmovie2.ui.adapter.CollectionAdapter
 import dagger.BindsInstance
@@ -28,6 +29,7 @@ interface AppComponent {
     fun inject(collectionsPresenter: CollectionsPresenter)
     fun inject(collectionAdapter: CollectionAdapter)
     fun inject(collectionPresenter: CollectionPresenter)
+    fun inject(moviePresenter: MoviePresenter)
 
     @Component.Builder
     interface Builder {

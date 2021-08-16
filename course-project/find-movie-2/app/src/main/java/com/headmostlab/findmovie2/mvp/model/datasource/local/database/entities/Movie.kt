@@ -13,3 +13,19 @@ class Movie(
     val poster: String?,
     val backdrop: String?
 )
+
+@Entity
+class FullMovie(
+    @PrimaryKey val id: Int,
+    val title: String,
+    val origTitle: String,
+    val duration: Int,
+    val rating: Double,
+    val votesAverage: Double,
+    val votesCount: Int,
+    val budget: Int,
+    val revenue: Long,
+    val date: String,
+    val description: String,
+    val poster: String,
+)

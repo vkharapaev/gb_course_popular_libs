@@ -16,7 +16,7 @@ import javax.inject.Inject
 class CollectionPresenter(collectionArg: Collection?) : MvpPresenter<CollectionView>() {
 
     private val collection: Collection =
-        collectionArg ?: throw IllegalArgumentException("Collection is not specified")
+        collectionArg ?: throw IllegalArgumentException("Collection is not provided")
 
     private val _listPresenter by lazy {
         CollectionListPresenterImpl(imageHostProvider, ::goToMovieScreen)
