@@ -8,11 +8,12 @@ import com.headmostlab.findmovie2.mvp.model.entity.ShortMovie
 import com.headmostlab.findmovie2.mvp.presenter.MoviePresenter
 import com.headmostlab.findmovie2.mvp.view.MovieView
 import com.headmostlab.findmovie2.ui.App
+import com.headmostlab.findmovie2.ui.BackButtonListener
 import com.headmostlab.findmovie2.ui.utils.viewBinding
 import moxy.MvpAppCompatFragment
 import moxy.ktx.moxyPresenter
 
-class MovieFragment : MvpAppCompatFragment(R.layout.fragment_movie), MovieView {
+class MovieFragment : MvpAppCompatFragment(R.layout.fragment_movie), MovieView, BackButtonListener {
 
     companion object {
         private const val ARGUMENT_MOVIE = "MOVIE"
@@ -31,6 +32,8 @@ class MovieFragment : MvpAppCompatFragment(R.layout.fragment_movie), MovieView {
         }
     }
 
+    override fun init() {}
+
     override fun showMovie(movie: FullMovie) {
         val context = binding.root.context
         with(binding) {
@@ -44,10 +47,11 @@ class MovieFragment : MvpAppCompatFragment(R.layout.fragment_movie), MovieView {
             date.text = if (movie.date.length > 4) movie.date.subSequence(0..3) else movie.date
             description.text = movie.description
         }
-//        actorAdapter.submitList(movie.people)
     }
 
-    override fun init() {
+    override fun backPressed(): Boolean {
+        presenter.onBackPressed()
+        return true
     }
 
 }
